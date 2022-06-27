@@ -1,0 +1,58 @@
+
+Tarea 3 SD: Cassandra
+
+Integrantes: Abel Sierra
+
+Dado que el proyecto esta en docker, lo unico que se debe hacer una vez clonado el repositorio es lo siguietnete:
+
+docker-compose build
+docker-compose up
+
+El compose esta basado en los entregados en los siguientes repositorios:
+
+# https://digitalis.io/blog/containerized-cassandra-cluster-for-local-testing
+# https://github.com/bitnami/bitnami-docker-cassandra/blob/master/docker-compose-cluster.yml
+
+
+Una vez hecho lo anterior, se crearan los 3 contenedores de Cassandra solicitados junto a un container adicional para montar la API.
+
+La API se encuentra montada en Python debido a las dificultades de conexion encontradas al usar JS. Tristemente, las mismas dificultades de conexion fueron encontradas al trabajar con Python...
+
+Las imagenes de Cassandra utilizadas para el proyecto son las de Bitnami puesto que las otras imagenes agotaban la memoria disponible en el equipo al montar 3 instancias distintas.
+
+Las diversas rutas de la api son las siguientes:
+
+
+La ruta http://localhost:5000/delete recibe una id de receta ingresada en una de las tablas y la borra.
+
+
+La ruta http://localhost:5000/edit recibe una id de receta a modificiar, ademas de los parametros a modificar y los nuevos valores respectivos
+
+
+Las rutas http://localhost:5000/res y http://localhost:5000/pas devuelven los contenidos de las tablas recetas y pacientes respectivamente. Esto con el fin de comprobar
+la correcta creacion de cada uno de los inputs en dichas tablas (para modificar y eliminar recetas ademas de conocer los pacientes previamente existentes)
+
+
+Finalmente, la ruta http://localhost:5000/create ingresa recetas en la base de datos. En caso de no existir el usuario asociado a dicha receta, tambien lo crea.
+
+
+Los datos requeridos para utilizar las funciones asociadas a cada una de estas direccions son envidadas como formulario y en forma de POST.
+
+
+Tristemente, todo el funcionamiento es teorico ya que no se pudo realizar la conexion al Cluster de Cassandra.
+
+
+-----------------------
+-----------------------
+
+
+Preguntas Asociadas a la Actividad:
+
+1)
+
+
+2)
+
+
+
+3)

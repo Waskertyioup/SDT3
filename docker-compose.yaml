@@ -1,0 +1,78 @@
+# https://digitalis.io/blog/containerized-cassandra-cluster-for-local-testing
+# https://github.com/bitnami/bitnami-docker-cassandra/blob/master/docker-compose-cluster.yml
+
+
+version: '2'
+networks:
+  cassandra:  # docker network where all cassandra nodes will be put in
+services:
+  cass1:
+    image: docker.io/bitnami/cassandra:4.0   # better to use a specific version, if you want to control upgrades 
+    container_name: cass1
+
+    mem_limit: 1g  # It's not strictly required, but it's better to have some memory limit
+    networks:
+      - cassandra
+    volumes:
+
+      - ./data:/docker-entrypoint-initdb.d
+    environment:
+      - CASSANDRA_SEEDS=cass1,cass2,cass3
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+    ports:
+      - "9042:9042"
+
+  cass2:
+    image: docker.io/bitnami/cassandra:4.0
+    logging:
+      driver: none
+    container_name: cass2
+
+    mem_limit: 1g
+    networks:
+      - cassandra
+    environment:
+      - CASSANDRA_SEEDS=cass1,cass2,cass3
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+    depends_on:
+      - cass1    # start cass2 only after cass1 is healthy
+        #condition: service_started
+    ports:
+      - "9043:9042"
+
+  cass3:
+    image: docker.io/bitnami/cassandra:4.0
+    logging:
+      driver: none
+    container_name: cass3
+
+    mem_limit: 1g
+    networks:
+      - cassandra
+    environment:
+      - CASSANDRA_SEEDS=cass1,cass2,cass3
+      - CASSANDRA_CLUSTER_NAME=cassandra-cluster
+      - CASSANDRA_PASSWORD_SEEDER=yes
+      - CASSANDRA_PASSWORD=cassandra
+    depends_on:
+      - cass2    # start cass3 only after cass1 is healthy
+        #condition: service_started
+    ports:
+      - "9044:9042"
+
+  pyapi:
+    restart: always
+    depends_on:
+      - cass1
+      - cass2
+      - cass3
+    build:
+      context: ./pyapi
+      dockerfile: ./Dockerfile
+    
+    ports:
+      - "5000:5000"
