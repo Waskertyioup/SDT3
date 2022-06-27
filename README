@@ -72,6 +72,14 @@ Los metodos son:
 SimpleStrategy: Replica los datos cuando el Data Center es "local" (Es decir, los nodos del Cluster estan en un unico Data Center)
 NetworkTopologyStrategy: Utilizado al usar multiples Data Center (Los Clusters se encuentran distribuidos). Tambien existe Old Network Topology Strategy, una version deprecada de este metodo
 
+Dado que se trabaja con un Cluster local, basta con utilizar SimpleStrategy para solucionar el problema actual
 
 3)
+
+En un nivel pequeño Cassandra deberia ser capaz de suplir las necesidades del problema, sin embargo, como se dijo antes, Cassandra puede tener problemas en Clusters de gran volumen
+
+Si bien Cassandra permite escalar la memoria de los nodos, dado que buscamos distribuir al escalar, se necesitarian multiples Data Center dado que no tiene mucho sentido tener un Cluster de forma local si se busca tolerancia a fallos
+
+Obviamente se deben solucionar los problemas de conexion entre la API y el Cluster antes de poner esta solucion en marcha.
+Ademas, a nivel personal buscaria replicar los nodos en al menos otro Data Center puesto que en mi sector la luz se va de forma periodica (?)
 
