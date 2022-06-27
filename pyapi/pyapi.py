@@ -24,6 +24,31 @@ def index():
 
     return "hola mundo"
 
+
+
+@app.route('/create',methods = ['GET', 'POST'])
+def create():
+
+    pacientes, recetas = cassandra()
+    if request.method == 'POST':
+
+
+        rut = request.form['rut']
+        query = "SELECT * FROM pacientes WHERE rut = " + rut + ";"
+        query = pacientes.execute(query)
+        if query:
+            continue
+        else:
+            query = "INSERT INTO pacientes (nombre, apellido, rut, email, fecha_nacimiento) VALUES(" + request.form['nombre'] + "," + request.form['apellido'] + "," + request.form['rut'] + ","+ request.form['email'] + "," + request.form['fecha_nacimiento'] + ");"
+            query = pacientes.execute(query)
+        query = "INSERT INTO recetas (id_paciente, comentario, farmacos, doctor) VALUES(" + request.form['id_paciente'] + "," + request.form['comentario'] + "," + request.form['farmacos'] + ","+ request.form['doctor'] +");"
+        query = recetas.execute(query)
+
+
+    return "created"
+
+
+
 @app.route('/pas',methods = ['GET', 'POST'])
 def pasientes():
 
@@ -44,25 +69,6 @@ def recetas():
     
         return query
 
-
-@app.route('/create',methods = ['GET', 'POST'])
-def create():
-    pacientes, recetas = cassandra()
-    if request.method == 'POST':
-
-        nombre = request.form['nombre']
-        apellido = request.form['apellido']
-        rut = request.form['rut']
-        email = request.form['email']
-        fecha_nacimiento = request.form['fecha_nacimiento']
-        comentario = request.form['comentario']
-        farmacos = request.form['farmacos']
-        doctor = request.form['doctor']
-
-
-
-
-    return "created"
 
 
 @app.route('/update',methods = ['GET', 'POST'])
@@ -91,4 +97,4 @@ def delete():
     return "deleted"
 
 if __name__=='__main__':
-    app.run(debug=True,host='0.0.0.0',port=5000)
+    app.run(host='0.0.0.0',port=5000)
