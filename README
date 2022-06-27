@@ -50,9 +50,28 @@ Preguntas Asociadas a la Actividad:
 
 1)
 
+La topologia de casandra es una de anillo, donde ninguno de los miembros es mas importante que los demas.
+Los miembros del anillo se comunican mediante un protocolo de Gossip. Este protocolo es un intercambio de mensajes de estado entre un nodo y a lo mas 3 nodos de la estructura.
+Estos mensajes ocurren cada segundo e incluyen informacion del nodo y de los nodos con los que este se ha comunicado.
+
+Al recebir una consulta, el nodo receptor encamina la consulta a los nodos responsables de la informacion consultada. Esto es necesario puesto que no toda la informacion esta en todos los nodos.
+
+Cassandra es tolerante a fallos debido a la duplicacion de los datos con los que cuenta. Obviamente siempre dependera del grado de replicacion de la informacion,
+pero se esperaria que cada dato este en una cantidad minima de tablas en un sistema funcional
+
+En Clusters pequeños resulta util, sin embargo, debido a la gran cantidad de mensajes (Gossip) y a la limitacion de nodos a los que se les puede realizar dicho proceso,
+existe un numero maximo de Clusters en los cuales no existira problemas, posteriormente, el proceso se vuelve ineficiente
+
+Al realizar una consulta, el nodo consultado (cordinador) se vuelve una especie de balanceador de carga puesto que este sera el encargado de enviar la consulta al nodos correspondiente
+
 
 2)
 
+Los metodos son:
+
+SimpleStrategy: Replica los datos cuando el Data Center es "local" (Es decir, los nodos del Cluster estan en un unico Data Center)
+NetworkTopologyStrategy: Utilizado al usar multiples Data Center (Los Clusters se encuentran distribuidos). Tambien existe Old Network Topology Strategy, una version deprecada de este metodo
 
 
 3)
+
